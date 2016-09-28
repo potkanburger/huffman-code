@@ -18,6 +18,7 @@ namespace Huffman
 
         public void feedTree(TableFq tfq)
         {
+            _tree.Clear();
             foreach(KeyValuePair<char, int> kVal in tfq.getTable())
             {
                 _tree.Add(new Nodes(kVal));
@@ -31,36 +32,40 @@ namespace Huffman
             return (val1 <= val2) ? true : false;
         }
 
+
         public void createfromTwoSmaller()
         {
-         
+
             Nodes n1 = new Nodes();
             Nodes n2 = new Nodes();
             int count = 0;
             List<Nodes> res = new List<Nodes>();
-            foreach(Nodes nt in _tree)
+            foreach (Nodes nt in _tree)
             {
-                if(count == 0)
+                if (count == 0)
                 {
                     n1 = nt;
-                }else if(count == 1)
+                }
+                else if (count == 1)
                 {
                     if (ordered(n1, nt))
                     {
                         n2 = nt;
-                    }else
+                    }
+                    else
                     {
                         n2 = n1;
                         n1 = nt;
                     }
-                }else
+                }
+                else
                 {
                     if (ordered(nt, n1))
                     {
                         n2 = n1;
                         n1 = nt;
                     }
-                    else if(ordered(nt, n2))
+                    else if (ordered(nt, n2))
                     {
                         n2 = nt;
                     }
@@ -108,7 +113,7 @@ namespace Huffman
                 Nodes nd1 = nodeList.ElementAt(0);
                 Nodes nd2 = nodeList.ElementAt(1);
                 Tuple<byte, int> t;
-                byte nb = (byte)(b << 1); ;
+                byte nb = (byte)(b << 1); 
                 if (nd1.hasChildren())
                 {
                     resHuf = recursiveHuffman(resHuf, nd1.getChildren(), (byte)(nb & ~1), len+=1);
@@ -139,6 +144,11 @@ namespace Huffman
                 if (n.hasChildren())
                 {
                     recursiveHuffman(resHuf, n.getChildren(), b, len);
+                }
+                else if (len == 0)
+                {
+                    Tuple<byte, int> t = new Tuple<byte, int>((byte)((b << 1) & ~1), len += 1);
+                    resHuf.Add(n.getKeyValuePair().Key, t);
                 }
             }
 

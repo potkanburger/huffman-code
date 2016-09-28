@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace Huffman
 {
     class Program
@@ -24,7 +23,25 @@ namespace Huffman
             Console.Write(bnTree.ToString());
             Console.Write("\n\n\n");
             Console.Write(hf.ToString());
+
+            string testString;
+            Console.Write("\nEnter a string to test: ");
+            testString = Console.ReadLine();
+            Console.Write("\n String Length: " + testString.Length);
+            TableFq testTable = new TableFq(testString);
+            bnTree.feedTree(testTable);
+            bnTree.computeTree();
+            HuffmanCode testHf = new HuffmanCode();
+            testHf = bnTree.createHuffman();
+            Console.Write(bnTree.ToString());
+            Console.Write("\n\n\n");
+            Console.Write(testHf.ToString());
+
+            byte[] b = testHf.concat(testString);
+            string res = testHf.decompress(b);
+            Console.Write("\n"+res);
             Console.Read();
+
         }
     }
 }
