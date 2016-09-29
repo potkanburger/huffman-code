@@ -43,7 +43,7 @@ namespace Huffman
             _huffman = huffman;
         }
 
-        public byte[] concat(string str)
+        public bool[] concat(string str)
         {
             byte[] concatenation = new byte[str.Length]; //la taille de la concaténation par code Huffman sera nécessairement inférieure à la taille de la string
             //Tuple<byte,int>[] res = new Tuple<byte, int>[str.Length]; 
@@ -70,22 +70,54 @@ namespace Huffman
 
             if (curBits > 0)
             {
-                curByte = (byte)(curByte << (8-curBits));
+                curByte = (byte)(curByte << (8 - curBits));           
                 concatenation[count] = curByte;
+                count+=1;
             }
 
-            byte[] result = new byte[count+1];
-            for (int i = 0; i < count+1; i++)
+            /*byte[] result = new byte[count];
+            for (int i = 0; i < count; i++)
             {
                 result[i] = concatenation[i];
+            }*/
+
+            int sizeBoolArray = (count-1)* 8 + curBits;
+            bool[] boolTest = new bool[sizeBoolArray];
+            byte loaded = (byte)0;
+            bool b;
+            for (int i = 0; i < count-1; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    loaded = (byte)(concatenation[i] >> (7 - j));
+                    loaded = (byte)(loaded & 1);
+                    if (loaded.Equals(0))
+                        b = false;
+                    else
+                        b = true;
+         
+                    boolTest[i * 8 + j] = b;
+                }
             }
-           
-            return result;
+
+            for (int j = 0; j < curBits; j++)
+            {
+                loaded = (byte)(concatenation[count-1] >> (7 - j));
+                loaded = (byte)(loaded & 1);
+                if (loaded.Equals(0))
+                    b = false;
+                else
+                    b = true;
+
+                boolTest[(count-1)* 8 + j] = b;
+            }
+
+            return boolTest;
 
           
         }
 
-        public string decompress(byte[] concat)
+        public string decompress(bool[] concat)
         {
             string s = "";
             bool b;
@@ -97,7 +129,8 @@ namespace Huffman
                 }
                 decompressDico[_huffman[c].Item2].Add(_huffman[c].Item1, c);           
             }
-            bool[] boolTest = new bool[concat.Length * 8];
+
+            /*bool[] boolTest = new bool[concat.Length * 8];
             byte loaded = (byte)0;
             for (int i = 0; i < concat.Length; i++)
             {
@@ -112,16 +145,16 @@ namespace Huffman
                     }
                     boolTest[i * 8 + j] = b;
                 }   
-            }
+            }*/
             int count = 0;
             byte testByte = (byte)0;
 
             try
             {
-                 for (int i = 0; i < boolTest.Length; i++)
+                 for (int i = 0; i < concat.Length; i++)
                  {
                     testByte = (byte)(testByte << 1);
-                    if (boolTest[i])
+                    if (concat[i])
                         testByte = (byte)(testByte | 1);
                     else
                         testByte = (byte)(testByte & ~1);

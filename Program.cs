@@ -24,10 +24,15 @@ namespace Huffman
             Console.Write("\n\n\n");
             Console.Write(hf.ToString());
 
-            string testString;
+            string testString = "";
             Console.Write("\nEnter a string to test: ");
-            testString = Console.ReadLine();
-            Console.Write("\n String Length: " + testString.Length);
+            ConsoleKeyInfo c = Console.ReadKey();
+            while (c.Key != ConsoleKey.Enter)
+            {
+                testString += c.KeyChar;
+                c = Console.ReadKey();
+            }
+            Console.Write("\n String Length: " + testString.Length+"\n"+testString+"\n");
             TableFq testTable = new TableFq(testString);
             bnTree.feedTree(testTable);
             bnTree.computeTree();
@@ -37,7 +42,7 @@ namespace Huffman
             Console.Write("\n\n\n");
             Console.Write(testHf.ToString());
 
-            byte[] b = testHf.concat(testString);
+            bool[] b = testHf.concat(testString);
             string res = testHf.decompress(b);
             Console.Write("\n"+res);
             Console.Read();
