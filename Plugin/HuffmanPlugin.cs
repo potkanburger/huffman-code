@@ -9,47 +9,53 @@ namespace HuffmanPlugin
 {
     public class HuffmanPlugin : MarshalByRefObject, Huffman.IPlugin
     {
-        private string _pluginName;
 
-        public HuffmanPlugin(){
-            _pluginName = "workPlease";
+        public HuffmanPlugin(){  
         }
         
         bool Huffman.IPlugin.Compress(ref Huffman.HuffmanData hf){
-            byte[] test = new byte[12];
-            List<KeyValuePair<byte, int>> ll = new List<KeyValuePair<byte, int>>();
-            for (int i = 0; i < 12; i++)
+            try
             {
-                test[i] = (byte)i;
-                ll.Add(new KeyValuePair<byte,int>((byte) i, i));
-            }
+                TableFq tf = new TableFq(hf.uncompressedData);
+                BinaryTree bnTree = new BinaryTree();
+                bnTree.feedTree(tf);
+                bnTree.computeTree();
+                HuffmanCode hfCode = new HuffmanCode();
+                hfCode = bnTree.createHuffman();
 
-            hf.compressedData = test;
-            hf.uncompressedData = test;
-            hf.sizeOfUncompressedData = 12;
-            hf.frequency = ll;
+                hf.sizeOfUncompressedData = hf.uncompressedData.Length;
+                hf.frequency = tf.getTable().ToList();
+                hf.compressedData = hfCode.concat(hf.uncompressedData);
+            }
+            catch (SystemException e)
+            {
+                return false;
+            }
             return true;
         }
 
         bool Huffman.IPlugin.Decompress(ref Huffman.HuffmanData hf){
-            byte[] test = new byte[12];
-            List<KeyValuePair<byte, int>> ll = new List<KeyValuePair<byte, int>>();
-            for (int i = 0; i < 12; i++)
+            try
             {
-                test[i] = (byte)i;
-                ll.Add(new KeyValuePair<byte, int>((byte)i, i));
-            }
+                TableFq tf = new TableFq(hf.frequency);
+                BinaryTree bnTree = new BinaryTree();
+                bnTree.feedTree(tf);
+                bnTree.computeTree();
+                HuffmanCode hfCode = new HuffmanCode();
+                hfCode = bnTree.createHuffman();
 
-            hf.compressedData = test;
-            hf.uncompressedData = test;
-            hf.sizeOfUncompressedData = 12;
-            hf.frequency = ll;
+                hf.uncompressedData = hfCode.decompress(hf.compressedData, hf.sizeOfUncompressedData);
+            }
+            catch (SystemException e)
+            {
+                return false;
+            }
             return true;
         }
 
         string Huffman.IPlugin.PluginName{
             get{
-                return "workPlease";
+                return "GenouxHuTual_plugin";
             }
         }
 
