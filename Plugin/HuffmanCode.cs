@@ -155,8 +155,16 @@ namespace HuffmanPlugin
 
             try
             {
-                 for (int i = 0; i < concat.Length; i++)
+                 for (int i = 0; i < concat.Length*8; i++)
                  {
+                    /*s[decryptedValues] = (byte)'a';
+                    decryptedValues += 1;
+                    if (decryptedValues >= dataLength)
+                    {
+                        break;
+                    }*/
+
+                    
                     testByte = (byte)(testByte << 1);
                     if (boolTest[i])
                         testByte = (byte)(testByte | 1);
@@ -169,7 +177,8 @@ namespace HuffmanPlugin
                     {
                         if (decompressDico[countBits].ContainsKey(testByte))
                         {
-                            s[decryptedValues++] = decompressDico[countBits][testByte];
+                            s[decryptedValues] = decompressDico[countBits][testByte];
+                            decryptedValues += 1;
                             countBits = 0;
                             testByte = (byte)0;
                             if(decryptedValues>=dataLength){
@@ -182,7 +191,7 @@ namespace HuffmanPlugin
                     {
                         countBits = 0;
                         testByte = (byte)0;
-                        throw new SystemException("Decompression failed");
+                        //throw new SystemException("Decompression failed");
                     }
 
                 }
@@ -191,7 +200,18 @@ namespace HuffmanPlugin
             {
                 Console.Write(e.ToString());
             }
+
+                 
             return s;
+            
+            /*byte[] test = new byte[dataLength];
+
+            for(int i=0; i<dataLength; i++)
+            {
+                test[i] = (byte) 'a';
+            }
+
+            return test;*/
         }
     }
 }

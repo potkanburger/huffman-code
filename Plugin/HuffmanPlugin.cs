@@ -10,7 +10,12 @@ namespace HuffmanPlugin
     public class HuffmanPlugin : MarshalByRefObject, Huffman.IPlugin
     {
 
-        public HuffmanPlugin(){  
+        HuffmanCode _hfCode;
+        int _compressedSize;
+
+        public HuffmanPlugin(){
+            _hfCode = new HuffmanCode();
+            _compressedSize = 0;
         }
         
         bool Huffman.IPlugin.Compress(ref Huffman.HuffmanData hf){
@@ -20,12 +25,13 @@ namespace HuffmanPlugin
                 BinaryTree bnTree = new BinaryTree();
                 bnTree.feedTree(tf);
                 bnTree.computeTree();
-                HuffmanCode hfCode = new HuffmanCode();
-                hfCode = bnTree.createHuffman();
+                _hfCode = new HuffmanCode();
+                _hfCode = bnTree.createHuffman();
+                _compressedSize = hf.uncompressedData.Length;
 
                 hf.sizeOfUncompressedData = hf.uncompressedData.Length;
                 hf.frequency = tf.getTable().ToList();
-                hf.compressedData = hfCode.concat(hf.uncompressedData);
+                hf.compressedData = _hfCode.concat(hf.uncompressedData);
             }
             catch (SystemException e)
             {
@@ -35,27 +41,22 @@ namespace HuffmanPlugin
         }
 
         bool Huffman.IPlugin.Decompress(ref Huffman.HuffmanData hf){
-            try
-            {
-                TableFq tf = new TableFq(hf.frequency);
-                BinaryTree bnTree = new BinaryTree();
-                bnTree.feedTree(tf);
-                bnTree.computeTree();
-                HuffmanCode hfCode = new HuffmanCode();
-                hfCode = bnTree.createHuffman();
+            TableFq tf = new TableFq(hf.frequency);
+            BinaryTree bnTree = new BinaryTree();
+            bnTree.feedTree(tf);
+            bnTree.computeTree();
+            _hfCode = new HuffmanCode();
+            _hfCode = bnTree.createHuffman();
 
-                hf.uncompressedData = hfCode.decompress(hf.compressedData, hf.sizeOfUncompressedData);
-            }
-            catch (SystemException e)
-            {
-                return false;
-            }
+            hf.uncompressedData = _hfCode.decompress(hf.compressedData, hf.sizeOfUncompressedData);
+            //hf.sizeOfUncompressedData = hf.sizeOfUncompressedData;
+
             return true;
         }
 
         string Huffman.IPlugin.PluginName{
             get{
-                return "GenouxHuTual_plugin";
+                return "GenouxHuTual_pluginJokariTresRose";
             }
         }
 
