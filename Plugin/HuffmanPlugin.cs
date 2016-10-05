@@ -41,22 +41,30 @@ namespace HuffmanPlugin
         }
 
         bool Huffman.IPlugin.Decompress(ref Huffman.HuffmanData hf){
-            TableFq tf = new TableFq(hf.frequency);
-            BinaryTree bnTree = new BinaryTree();
-            bnTree.feedTree(tf);
-            bnTree.computeTree();
-            _hfCode = new HuffmanCode();
-            _hfCode = bnTree.createHuffman();
 
-            hf.uncompressedData = _hfCode.decompress(hf.compressedData, hf.sizeOfUncompressedData);
-            //hf.sizeOfUncompressedData = hf.sizeOfUncompressedData;
+            
+            try
+            {
+                TableFq tf = new TableFq(hf.frequency);
+                BinaryTree bnTree = new BinaryTree();
+                bnTree.feedTree(tf);
+                bnTree.computeTree();
+                _hfCode = new HuffmanCode();
+                _hfCode = bnTree.createHuffman();
 
+                hf.uncompressedData = _hfCode.decompress(hf.compressedData, hf.sizeOfUncompressedData);
+            }
+            catch (SystemException e)
+            {
+                return false;
+            }
             return true;
+
         }
 
         string Huffman.IPlugin.PluginName{
             get{
-                return "GenouxHuTual_pluginJokariTresRose";
+                return "GenouxHuTual_plugin";
             }
         }
 

@@ -187,12 +187,12 @@ namespace HuffmanPlugin
                         }
                     }
 
-                    if (countBits >= 8)
+                    /*if (countBits >= 8)
                     {
                         countBits = 0;
                         testByte = (byte)0;
-                        //throw new SystemException("Decompression failed");
-                    }
+                        throw new SystemException("Decompression failed");
+                    }*/
 
                 }
             }
@@ -204,14 +204,6 @@ namespace HuffmanPlugin
                  
             return s;
             
-            /*byte[] test = new byte[dataLength];
-
-            for(int i=0; i<dataLength; i++)
-            {
-                test[i] = (byte) 'a';
-            }
-
-            return test;*/
         }
     }
 }
